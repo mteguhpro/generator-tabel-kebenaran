@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name="description" content="Generator Tabel Kebenaran atau truth table generator adalah alat yang dapat memudahkan anda dalam membuat tabel kebenaran untuk menyelesaikan persoalan pada matematika bab logika">
+    <meta name="author" content="M Teguh P">
+    <title>Generator Tabel Kebenaran</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <style>
+        .true-cell{
+            color:green;
+        }
+        .false-cell{
+            color:red;
+        }
+    </style>
+</head>
+<body class="bg-white text-dark">
+<div class="container-fluid">
+    <h1 class="mx-2 mb-4 text-center">Generator Tabel Kebenaran</h1>
+
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+
+            Jumlah Pernyataan:
+            <div class="input-group mb-3">
+                <select id="jumlah-pernyataan" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option selected value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="button" id="start">Create</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+    
+    <div class="m-2 float-right">
+        <button class="btn btn-primary tombol-tambah">Insert</button>
+    </div>
+
+    <div class="m-2">
+        <div class="table-responsive">
+            <table class="table table-bordered table-stripped" id="tabel-hasil">
+                <thead>
+                    <tr id="row-head-hasil">
+        
+                    </tr>
+                </thead>
+                <tbody id="body-hasil">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-tambah" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row no-gutters">
+                        <div class="col-4 col-lg-5">
+                            Proposisi 1:<br>
+                            <select id="pilihan1" class="form-control"></select>
+                        </div>
+                        <div class="col-4 col-lg-2 selain-negasi">
+                            Operator:<br>
+                            <select id="operator" class="form-control">
+                                <option value="">Pilih</option>
+                                <option value="AND">&and; &nbsp; &nbsp; AND</option>
+                                <option value="OR">&or; &nbsp; &nbsp; OR</option>
+                                <option value="IMPLIKASI">&rarr; &nbsp; &nbsp; IMPLIKASI</option>
+                                <option value="BIIMPLIKASI">&harr; &nbsp; &nbsp; BIIMPLIKASI</option>
+                                <option value="NAND">&#8892; &nbsp; &nbsp; NAND</option>
+                                <option value="NOR">&barvee; &nbsp; &nbsp; NOR</option>
+                                <option value="XOR">&oplus; &nbsp; &nbsp; XOR</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-4 col-lg-5 selain-negasi">
+                            Proposisi 2:<br>
+                            <select id="pilihan2" class="form-control"></select>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button id="tambah-kolom" type="button" class="btn btn-primary">OK</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script>
+/* M Teguh P - mteguhpro.github.io - t.me/ttgguh */
+
+'use strict';
+
+const namaKolom = ['p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+$('.tombol-tambah').hide()
+
+$('#start').click(function(){
+    $(this).text('Recreate')
+    $('.tombol-tambah').show()
+    const jumlahPernyataan = parseInt($('#jumlah-pernyataan').val())
+    const jumlahBaris = 2 ** jumlahPernyataan
+
+    //membuat header
+    let header =  '';
+    for(let i = 0; i < jumlahPernyataan; i++ ){
+        header += ('<th class="judul-kolom" data-index-kolom-head="'+i+'">'+namaKolom[i]+'</th>');
+    }
+    $('#row-head-hasil').html(header)
+
+    //membuat body tabel
+    let bodyTable = ''
+    for(let i = 1; i <= jumlahBaris; i++ ){
+        bodyTable += '<tr id="row-'+i+'">'
+        for(let j = 0; j < jumlahPernyataan; j++ ){
+            bodyTable += '<td id="'+namaKolom[j]+i+'" data-index-kolom-body="'+j+'">'+namaKolom[j]+i+'</td>'
+        }
+        bodyTable += '</tr>'
+    }
+    $('#body-hasil').html(bodyTable)
+
+    //mengisi kolom default
+    for(let j = 0; j < jumlahPernyataan; j++ ){
+        let maxLoop = jumlahBaris / (2 ** (j + 1))
+        let isiCell = true
+        let countPerubahan = maxLoop
+        for(let i = 1; i <= jumlahBaris; i++ ){
+            let className = isiCell ? 'true-cell' : 'false-cell'
+            $('#'+namaKolom[j]+i).text(isiCell).addClass(className)
+            countPerubahan = countPerubahan - 1
+            if(countPerubahan == 0){
+                isiCell = !isiCell
+                countPerubahan = maxLoop
+            }
+        }
+    }
+})
+
+$('.tombol-tambah').click(function(){
+    $('#modal-tambah').modal('show')
+
+    // reset pilihan 1 dan pilihan 2
+    $('#pilihan1').html('<option value="">Pilih</option>')
+    $('#pilihan2').html('<option value="">Pilih</option>')
+
+    $('.judul-kolom').each(function( index ) {
+        const indexKolom = $( this ).data('index-kolom-head')
+        const opt = $('<option></option>').text($( this ).text()).attr('value', indexKolom)
+        $('#pilihan1').append(opt)
+
+        if(! $(this).hasClass('negasi-kolom-telah-dibuat')){
+            //buat option negasi
+            const textNegasi = $( this ).text().length == 1 ? '~'+$( this ).text() : '~(' + $( this ).text() +')'
+            const optNegasi = $('<option class="negasi"></option>').text(textNegasi).attr('value', indexKolom)
+            $('#pilihan1').append(optNegasi)
+        }
+
+        const opt2 = $('<option></option>').text($( this ).text()).attr('value', indexKolom)
+        $('#pilihan2').append(opt2)
+    })
+})
+
+$('#pilihan1').change(function(){
+    if($('#pilihan1').find(":selected").hasClass('negasi')){
+        $('.selain-negasi').hide()
+    }else{
+        $('.selain-negasi').show()
+    }
+})
+
+$('#tambah-kolom').click(function(){
+    if($('#pilihan1').find(":selected").hasClass('negasi')){
+        negasi()
+    }else{
+        general()
+    }
+})
+
+function negasi(){
+    const dataUrut = $('.judul-kolom').length
+    //buat th
+    const namaKolom = $('#pilihan1').find(":selected").text()
+    const header = ('<th class="judul-kolom" data-index-kolom-head="'+dataUrut+'">'+namaKolom+'</th>');
+    $('#row-head-hasil').append(header)
+
+    const urutanTarget = $('#pilihan1').val()
+    $('th[data-index-kolom-head='+urutanTarget+']').addClass('negasi-kolom-telah-dibuat') //tandai bahwa negasi kolom ini sudah digenerate
+    //buat td
+    $('td[data-index-kolom-body='+urutanTarget+']').each(function( index ) {
+        const urutanrow = index + 1
+        const textIsi = !($(this).text() === 'true')
+        const html = $('<td data-index-kolom-body="'+dataUrut+'"></td>').text(textIsi).addClass(textIsi+'-cell')
+        $('#row-'+urutanrow).append(html)
+    })
+    $('#modal-tambah').modal('hide')
+    $('.selain-negasi').show()
+}
+
+function general(){
+    //Validasi Inputan
+    if(! $('#pilihan1').val() ){
+        alert('pilihan 1 harus diisi')
+        $('#pilihan1').focus()
+        return false
+    }
+    if(! $('#operator').val() ){
+        alert('Operator harus diisi')
+        $('#operator').focus()
+        return false
+    }
+    if(! $('#pilihan2').val() ){
+        alert('pilihan 2 harus diisi')
+        $('#pilihan2').focus()
+        return false
+    }
+    
+    tangani()
+}
+
+function tangani(){
+    const dataUrut = $('.judul-kolom').length
+    const operator = $('#operator').val()
+
+    const simbolOperator = {
+        'AND' : '&and;',
+        'OR' : '&or;',
+        'IMPLIKASI' : '&rarr;',
+        'BIIMPLIKASI' : '&harr;',
+        'NOR' : '&barvee;',
+        'NAND' : '&#8892;',
+        'XOR' : '&oplus;',
+    }
+
+    //buat th
+    const namaKolom = '(' + $('#pilihan1').find(":selected").text() +' '+simbolOperator[operator]+' ' + $('#pilihan2').find(":selected").text() + ')'
+    const header = ('<th class="judul-kolom" data-index-kolom-head="'+dataUrut+'">'+namaKolom+'</th>');
+    $('#row-head-hasil').append(header)
+
+    //tampung pilihan 1
+    const pilihan1 = []
+    const urutanTarget1 = $('#pilihan1').val()
+    $('td[data-index-kolom-body='+urutanTarget1+']').each(function( index ) {
+        pilihan1.push($(this).text() === 'true')
+    })
+    //buat td
+    const urutanTarget2 = $('#pilihan2').val()
+    $('td[data-index-kolom-body='+urutanTarget2+']').each(function( index ) {
+        const urutanrow = index + 1
+        const pilihan2 = ($(this).text() === 'true')
+
+        let textIsi = ''
+        switch (operator) {
+            case 'AND':
+                textIsi = cekAnd(pilihan1[index], pilihan2)
+                break;
+            case 'OR':
+                textIsi = cekOr(pilihan1[index], pilihan2)
+                break;
+            case 'IMPLIKASI':
+                textIsi = cekImplikasi(pilihan1[index], pilihan2)
+                break;
+            case 'BIIMPLIKASI':
+                textIsi = cekBiimplikasi(pilihan1[index], pilihan2)
+                break;
+            case 'NOR':
+                textIsi = cekNor(pilihan1[index], pilihan2)
+                break;
+            case 'NAND':
+                textIsi = cekNand(pilihan1[index], pilihan2)
+                break;
+            case 'XOR':
+                textIsi = cekXor(pilihan1[index], pilihan2)
+                break;
+        }
+        
+        const html = $('<td data-index-kolom-body="'+dataUrut+'"></td>').text(textIsi).addClass(textIsi+'-cell')
+        $('#row-'+urutanrow).append(html)
+    })
+    $('#modal-tambah').modal('hide')
+}
+
+function cekAnd(a, b){
+    return a && b
+}
+function cekOr(a, b){
+    return a || b
+}
+function cekImplikasi(a, b){
+    if(a && b){
+        return true
+    }else if(a && !b){
+        return false
+    }else if(!a && b){
+        return true
+    }else if(!a && !b){
+        return true
+    }
+}
+function cekBiimplikasi(a, b){
+    return a === b
+}
+function cekNor(a, b){
+    return !(a || b)
+}
+function cekNand(a, b){
+    return !(a && b)
+}
+function cekXor(a, b){
+    return !(a === b)
+}
+
+</script>
+</body>
+</html>
