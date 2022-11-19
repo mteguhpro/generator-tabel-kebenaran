@@ -1,6 +1,15 @@
 # Generator Tabel Kebenaran
 
-Generator Tabel Kebenaran atau truth table generator adalah alat yang dapat memudahkan anda dalam membuat tabel kebenaran untuk menyelesaikan persoalan pada matematika bab logika.
+Tools ini berbasis web, dibuat dengan jQuery dan Bootstrap.
+Truth table generator ini mendukung operator:
+AND
+OR
+IMPLIKASI
+BIIMPLIKASI
+NAND
+NOR
+XOR
+NEGASI
 
 ## Demo
 Lihat demo di [tgh.my.id/generator-tabel-kebenaran/](https://tgh.my.id/generator-tabel-kebenaran/)
