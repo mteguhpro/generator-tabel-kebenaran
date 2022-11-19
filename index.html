@@ -15,6 +15,9 @@
         .false-cell{
             color:red;
         }
+        .judul-kolom{
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="bg-white text-dark">
@@ -176,7 +179,7 @@ $('.tombol-tambah').click(function(){
 
         if(! $(this).hasClass('negasi-kolom-telah-dibuat')){
             //buat option negasi
-            const textNegasi = $( this ).text().length == 1 ? '~'+$( this ).text() : '~(' + $( this ).text() +')'
+            const textNegasi = $( this ).text().charAt(0) !== '~' ? '~'+$( this ).text() : '~(' + $( this ).text() +')'
             const optNegasi = $('<option class="negasi"></option>').text(textNegasi).attr('value', indexKolom)
             $('#pilihan1').append(optNegasi)
         }
